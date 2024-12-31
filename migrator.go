@@ -217,21 +217,14 @@ READ_DOCS:
 			}
 
 			var tempDestIndexName string
-			var tempTargetTypeName string
 			tempDestIndexName = docI["_index"].(string)
-			tempTargetTypeName = docI["_type"].(string)
 
 			if m.Config.TargetIndexName != "" {
 				tempDestIndexName = m.Config.TargetIndexName
 			}
 
-			if m.Config.OverrideTypeName != "" {
-				tempTargetTypeName = m.Config.OverrideTypeName
-			}
-
 			doc := Document{
 				Index:  tempDestIndexName,
-				Type:   tempTargetTypeName,
 				source: docI["_source"].(map[string]interface{}),
 				Id:     docI["_id"].(string),
 			}
@@ -270,7 +263,7 @@ READ_DOCS:
 			}
 
 			// sanity check
-			if len(doc.Index) == 0 || len(doc.Type) == 0 {
+			if len(doc.Index) == 0 {
 				log.Errorf("failed decoding document: %+v", doc)
 				continue
 			}
@@ -348,7 +341,6 @@ func (m *Migrator) bulkRecords(bulkOp BulkOperation, dstEsApi ESAPI, targetIndex
 		var strOperation string
 		doc := Document{
 			Index: targetIndex,
-			Type:  targetType,
 			Id:    docId, // docI["_id"].(string),
 		}
 
